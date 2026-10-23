@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ra1ny</title>
+<style>
+  :root {
+    --ink: #12100e;
+    --paper: #f2ede3;
+    --a: #e4572e;
+    --b: #2d5d7b;
+    --c: #e4c04a;
+    --d: #8c3b4a;
+
+    --gap: 1.6vh;
+    --word: min(14.5vw, 10.5vh);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--ink);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    font-family: "Helvetica Neue", Arial, "PingFang SC", sans-serif;
+  }
+
+  .poster {
+    position: relative;
+    width: min(94vw, 62vh);
+    aspect-ratio: 2 / 3;
+    background: var(--ink);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+  }
+
+  .blocks {
+    position: absolute;
+    inset: 0;
+    padding: var(--gap);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: var(--gap);
+    z-index: 1;
+  }
+
+  .blocks span {
+    display: block;
+    background: var(--paper);
+  }
+
+  .word {
+    position: relative;
+    z-index: 2;
+    padding: 0.28em 0.36em;
+    background: var(--ink);
+    font-size: var(--word);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--a);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  @media (max-aspect-ratio: 1/1) {
+    :root { --word: min(12vw, 8vh); }
+  }
+</style>
+</head>
+<body>
+  <main class="poster">
+    <div class="blocks">
+      <span class="b1"></span><span class="b2"></span><span class="b3"></span>
+      <span class="b4"></span><span class="b5"></span><span class="b6"></span>
+      <span class="b7"></span><span class="b8"></span><span class="b9"></span>
+    </div>
+
+    <div class="word">ra1ny</div>
+  </main>
+</body>
+</html>
