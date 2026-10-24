@@ -67,6 +67,73 @@
     color: var(--a);
     pointer-events: none;
     white-space: nowrap;
+    perspective: 800px;
+  }
+
+  .word__turn {
+    display: inline-block;
+    transform: rotate3d(0, 1, 0, var(--turn, 0deg));
+    transform-origin: 50% 50%;
+    transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+    will-change: transform;
+  }
+
+  .side-link {
+    position: fixed;
+    top: 50%;
+    z-index: 3;
+    color: var(--a);
+    font-size: clamp(1.5rem, 4.5vw, 4.5rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-shadow:
+      0 0 0.08em var(--ink),
+      0 0 0.35em var(--ink);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 0.35s ease,
+      transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1),
+      color 0.2s ease;
+  }
+
+  .side-link--github {
+    left: clamp(1.25rem, 3vw, 3rem);
+    transform: translate(-0.75rem, -50%);
+  }
+
+  .side-link--linuxdo {
+    right: clamp(1.25rem, 3vw, 3rem);
+    transform: translate(0.75rem, -50%);
+  }
+
+  body.show-left .side-link--github,
+  body.show-right .side-link--linuxdo {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(0, -50%);
+  }
+
+  .side-link:hover,
+  .side-link:focus-visible {
+    color: var(--c);
+  }
+
+  .side-link:focus-visible {
+    opacity: 1;
+    pointer-events: auto;
+    outline: 2px solid var(--c);
+    outline-offset: 0.15em;
+    transform: translate(0, -50%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .word__turn { transition: none; }
+    .side-link { transition: none; }
   }
 
   @media (max-aspect-ratio: 1/1) {
@@ -82,7 +149,45 @@
       <span class="b7"></span><span class="b8"></span><span class="b9"></span>
     </div>
 
-    <div class="word">ra1ny</div>
+    <div class="word"><span class="word__turn">ra1ny</span></div>
   </main>
+
+  <a class="side-link side-link--github" href="https://github.com/zhaoyu31959" target="_blank" rel="noopener noreferrer">GitHub</a>
+  <a class="side-link side-link--linuxdo" href="https://linux.do/u/rainey31959/summary" target="_blank" rel="noopener noreferrer">Linux DO</a>
+
+  <script>
+    const word = document.querySelector(".word");
+    const maxTurn = 45;
+    const sideThreshold = 2;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let frame = 0;
+    let pointerX = 0;
+
+    const updateTurn = () => {
+      frame = 0;
+      const half = window.innerWidth / 2;
+      const turn = Math.max(-maxTurn, Math.min(maxTurn, (pointerX / half - 1) * maxTurn));
+      if (!reducedMotion) word.style.setProperty("--turn", `${turn.toFixed(2)}deg`);
+      document.body.classList.toggle("show-left", turn < -sideThreshold);
+      document.body.classList.toggle("show-right", turn > sideThreshold);
+    };
+
+    const resetTurn = () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+      word.style.setProperty("--turn", "0deg");
+      document.body.classList.remove("show-left", "show-right");
+    };
+
+    const onPointerMove = (event) => {
+      if (event.pointerType === "touch") return;
+      pointerX = event.clientX;
+      if (!frame) frame = requestAnimationFrame(updateTurn);
+    };
+
+    window.addEventListener("pointermove", onPointerMove);
+    document.documentElement.addEventListener("mouseleave", resetTurn);
+    window.addEventListener("blur", resetTurn);
+  </script>
 </body>
 </html>
